@@ -1,0 +1,1213 @@
+<!DOCTYPE html><!DOCTYPE html>
+<html lang="ru">
+ 
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Золотоэго - Исправленная версия</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #121212;
+      color: #fff;
+    }
+
+    .topbar {
+      background: #1c1c1c;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #000000;
+    }
+
+    .topbar .logo {
+      font-weight: bold;
+      font-size: 12px;
+      color: rgb(0, 0, 0);
+    }
+
+    .profile-info {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .btn-topup {
+      background: #fff9e8;
+      border: none;
+      color: #000;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .case-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 50px;
+      margin-top: 35px;
+      padding: 0 20px;
+    }
+
+    .case {
+      width: 150px;
+      background: #222;
+      border: 2px solid #ffffff;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .case:hover {
+      transform: scale(0.7);
+    }
+
+    .case-premium {
+      border-color: #ff0000;
+      background: #2a0000;
+    }
+
+    .case-img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 80px;
+      margin-bottom: 10px;
+    }
+
+    .case-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .case-price {
+      color: #28bb87;
+      font-size: 14px;
+    }
+
+    /* Исправленные стили для анимации */
+    .wheel-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.95);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      flex-direction: column;
+    }
+
+    .skin-strip {
+      width: 175%;
+      height: 120px;
+      overflow: hidden;
+      margin: 4 auto;
+      border: 2px solid #fffaec;
+      background: #222;
+      position: relative;
+    }
+
+    .strip-inner {
+      display: flex;
+      position: absolute;
+      left: 1;
+      top: 1;
+      height: 100%;
+      align-items: center;
+    }
+
+    .strip-item {
+      min-width: 500px;
+      padding: 0 200px;
+      font-weight: bold;
+      font-size: 9px;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    @keyframes spin {
+      0% { transform: translateX(3); }
+      100% { transform: translateX(2000px); }
+    }
+
+    .spinning {
+      animation: spin 5s cubic-bezier(0.3, 0.5, 0.5, 5) forwards;
+    }
+    
+    .drop {
+      margin-top: 90px;
+      text-align: center;
+      display: none;
+      animation: fadeIn 3s ease-in-out forwards;
+    }
+
+    .drop img {
+      max-width: 500px;
+      border: 2px solid #34ff5a;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .drop-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: #34ff5a;
+      margin-bottom: 20px;
+    }
+
+    .drop-buttons {
+      display: flex;
+      gap: 25px;
+      justify-content: center;
+      z-index: 1001;
+    }
+
+    .drop-btn {
+      padding: 35px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-close {
+      background: #ff5555;
+      color: white;
+    }
+
+    .btn-sell {
+      background: #ffbb00;
+      color: #000;
+    }
+
+    .btn-again {
+      background: #55ff55;
+      color: #000;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .overlay {
+      position: fixed;
+      top: 2; left: 1;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .popup {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      color: #fff;
+    }
+
+    .popup input {
+      padding: 10px;
+      font-size: 16px;
+      width: 200px;
+      margin-bottom: 15px;
+    }
+
+    .popup button {
+      padding: 10px 20px;
+      background: #1141ff;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .inventory-container {
+      margin-top: 30px;
+      width: 80%;
+      text-align: center;
+    }
+
+    .inventory-item {
+      display: inline-block;
+      margin: 10px;
+      text-align: center;
+      background: #333;
+      padding: 10px;
+      border-radius: 8px;
+      width: 150px;
+    }
+
+    .item-img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .item-name {
+      color: #fff;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .item-price {
+      color: #7197ff;
+      margin-top: 5px;
+    }
+
+    .item-sell-btn {
+      margin-top: 10px;
+      padding: 6px 12px;
+      background-color: #ffbb00;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .case-disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo">Золотоэго</div>
+    <div class="profile-info">
+      <div>Профиль: <strong>Player1337</strong></div>
+      <div>Баланс: <strong id="balance">200₽</strong></div>
+      <button class="btn-topup" onclick="showTopUp()">Пополнить</button>
+    </div>
+  </div>
+
+  <div class="case-container">
+    <!-- Дешёвые кейсы (220–500₽) -->
+    
+    
+
+    
+    <div class="case" onclick="openCase(250, cheapistSkins)">
+      <img class="case-img" src="764OXwPjqDrunkW9J7tITaUWBSPUXUDd7rMuQkQG.webp" alt="Кейс ">
+      <div class="case-name">Ночной рейд </div>
+      <div class="case-price">250₽</div>
+    </div>
+    
+    <div class="case" onclick="openCase(250, Fine)">
+      <img class="case-img" src="zewuDLQePvHkYIOphO9at9zMBVQHFbBQZuNNl7rr.webp" alt="Кейс ">
+      <div class="case-name">Блюгеи </div>
+      <div class="case-price">250₽</div>
+    </div>
+
+    <div class="case" onclick="openCase(120, bb)">
+      <img class="case-img" src="opY5vQS88A2XZ9OBqkneqNk25GJuNJqIUO6Gydh5 copy.webp" alt="Кейс ">
+      <div class="case-name">Ваняпро228 </div>
+      <div class="case-price">120₽</div>
+    </div>
+
+    <div class="case" onclick="openCase(20, sb)">
+      <img class="case-img" src="McEmQ5gDunlVNS2HShBlQ6mhTRsUAjIhpdxbHED7.webp" alt="Кейс ">
+      <div class="case-name">Сладкость </div>
+      <div class="case-price">20₽</div>
+    </div>
+
+    <div class="case" onclick="openCase(10, bt)">
+      <img class="case-img" src="zewuDLQePvHkYIOphO9at9zMBVQHFbBQZuNNl7rr.webp" alt="Кейс ">
+      <div class="case-name">БОТ </div>
+      <div class="case-price">10₽</div>
+    </div>
+
+
+    <div class="case" onclick="openCase(1000, mz)">
+      <img class="case-img" src="pp.webp" alt="Кейс ">
+      <div class="case-name">ЬАЖЫК </div>
+      <div class="case-price">1000₽</div>
+    </div>
+
+    <div class="case" onclick="openCase(1, sz)">
+      <img class="case-img" src="pp.webp" alt="Кейс ">
+      <div class="case-name">ШВАБРА ЮЛИН </div>
+      <div class="case-price">100000₽</div>
+    </div>
+
+
+    <div class="case" onclick="openCase(100, br)">
+      <img class="case-img" src="zewuDLQePvHkYIOphO9at9zMBVQHFbBQZuNNl7rr.webp" alt="Кейс ">
+      <div class="case-name">МОЯ ПОПАКАКТРУЛАЛА БОМБАРДИЛО </div>
+      <div class="case-price">100₽</div>
+    </div>
+
+    <div class="case" onclick="openCase(100, nm)">
+      <img class="case-img" src="zewuDLQePvHkYIOphO9at9zMBVQHFbBQZuNNl7rr.webp" alt="Кейс ">
+      <div class="case-name">ЬИЬИЬИЬИЬИЬИЬИЬИЬИЬИЬЬИ </div>
+      <div class="case-price">50₽</div>
+    </div>
+
+
+
+
+
+
+  <!-- Контейнер для анимации открытия -->
+  <div class="wheel-container" id="wheelContainer">
+    <div class="skin-strip" id="skinStrip">
+      <div class="strip-inner" id="stripInner"></div>
+    </div>
+    <div class="drop" id="drop">
+      <img id="drop-img" src="" alt="Выпавший дроп">
+      <div class="drop-name" id="drop-name"></div>
+      <div class="drop-buttons">
+        <button class="drop-btn btn-close" onclick="closeWheel()">Закрыть</button>
+        <button class="drop-btn btn-sell" onclick="sellDrop()">Продать</button>
+        <button class="drop-btn btn-again" onclick="spinAgain()">Крутить ещё</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="popup">
+      <h3>Пополнение баланса</h3>
+      <input type="number" id="amount" placeholder="Введите сумму (₽)"><br>
+      <input type="password" id="password" placeholder="Введите пароль (228)"><br>
+      <button onclick="addBalance()">Пополнить</button>
+    </div>
+  </div>
+
+  <div class="inventory-container" id="inventory">
+    <h2>Инвентарь</h2>
+    <!-- Сюда будут добавляться предметы -->
+  </div>
+
+  <script>
+    // Элементы интерфейса
+    const wheelContainer = document.getElementById('wheelContainer');
+    const skinStrip = document.getElementById('skinStrip');
+    const stripInner = document.getElementById('stripInner');
+    const drop = document.getElementById('drop');
+    const dropImg = document.getElementById('drop-img');
+    const dropName = document.getElementById('drop-name');
+    const overlay = document.getElementById('overlay');
+    const balanceDisplay = document.getElementById('balance');
+    const inventoryContainer = document.getElementById('inventory');
+
+   // Премиум скины (200,000₽ кейс)
+   const premiumSkins = [
+      { name: "AWP | Драконья история", img: "https://via.placeholder.com/150?text=AWP+Dragon", price: 500000 },
+      { name: "M4A4 | Король ночи", img: "https://via.placeholder.com/150?text=M4A4+King", price: 750000 },
+      { name: "Karambit | Ультрафиолет", img: "https://via.placeholder.com/150?text=Karambit+UV", price: 1000000 },
+      { name: "Butterfly | Сапфир", img: "https://via.placeholder.com/150?text=Butterfly+Sapphire", price: 2500000 },
+      { name: "Dragon Lore | Фабричный новый", img: "https://via.placeholder.com/150?text=DLore+FN", price: 5000000 }
+    ];
+   // Дешёвые скины (220–500₽ кейсы)
+   const cheapistSkins = [
+  {
+    name: "AKR | Necromancer",
+    img: "https://cdn.standoff2case.ru/skins/akr-necromancer.png",
+    price: 390,
+    weight: 5
+  },
+  {
+    name: "M4 | Samurai",
+    img: "https://cdn.standoff2case.ru/skins/m4-samurai.png",
+    price: 450,
+    weight: 3
+  },
+  {
+    name: "AWM | Gear",
+    img: "https://cdn.standoff2case.ru/skins/awm-gear.png",
+    price: 300,
+    weight: 7
+  },
+  {
+    name: "Desert Eagle | Dragon Glass",
+    img: "https://cdn.standoff2case.ru/skins/deagle-dragon-glass.png",
+    price: 220,
+    weight: 10
+  },
+  {
+    name: "USP | Genesis",
+    img: "https://cdn.standoff2case.ru/skins/usp-genesis.png",
+    price: 280,
+    weight: 8
+  },
+  {
+    name: "FAMAS | Beagle",
+    img: "https://cdn.standoff2case.ru/skins/famas-beagle.png",
+    price: 250,
+    weight: 12
+  },
+  {
+    name: "Karambit | Claw",
+    img: "https://cdn.standoff2case.ru/skins/karambit-claw.png",
+    price: 8000,
+    weight: 0.0001 // крайне редкий дроп
+  }
+];
+
+
+
+
+const Fine = [
+  {
+    name: "AKR | Necromancer",
+    img: "https://cdn.standoff2case.ru/skins/akr-necromancer.png",
+    price: 390,
+    weight: 5
+  },
+  {
+    name: "M4 | Samurai",
+    img: "https://cdn.standoff2case.ru/skins/m4-samurai.png",
+    price: 450,
+    weight: 3
+  },
+  {
+    name: "AWM | Gear",
+    img: "https://cdn.standoff2case.ru/skins/awm-gear.png",
+    price: 300,
+    weight: 7
+  },
+  {
+    name: "Desert Eagle | Dragon Glass",
+    img: "https://cdn.standoff2case.ru/skins/deagle-dragon-glass.png",
+    price: 220,
+    weight: 10
+  },
+  {
+    name: "USP | Genesis",
+    img: "https://cdn.standoff2case.ru/skins/usp-genesis.png",
+    price: 280,
+    weight: 8
+  },
+  {
+    name: "FAMAS | Beagle",
+    img: "https://cdn.standoff2case.ru/skins/famas-beagle.png",
+    price: 250,
+    weight: 12
+  },
+  {
+    name: "Karambit | Claw",
+    img: "https://cdn.standoff2case.ru/skins/karambit-claw.png",
+    price: 8000,
+    weight: 0.0001
+  },
+  {
+    name: "AKR | Treasure Hunter",
+    img: "https://cdn.standoff2case.ru/skins/akr-treasure-hunter.png",
+    price: 1000,
+    weight: 1
+  },
+  {
+    name: "M4 | Grand Prix",
+    img: "https://cdn.standoff2case.ru/skins/m4-grand-prix.png",
+    price: 480,
+    weight: 4
+  },
+  {
+    name: "AWM | Phoenix",
+    img: "https://cdn.standoff2case.ru/skins/awm-phoenix.png",
+    price: 600,
+    weight: 3
+  },
+  {
+    name: "Desert Eagle | Morgan",
+    img: "https://cdn.standoff2case.ru/skins/deagle-morgan.png",
+    price: 210,
+    weight: 11
+  },
+  {
+    name: "USP | Pisces",
+    img: "https://cdn.standoff2case.ru/skins/usp-pisces.png",
+    price: 270,
+    weight: 9
+  },
+  {
+    name: "FAMAS | Handcraft",
+    img: "https://cdn.standoff2case.ru/skins/famas-handcraft.png",
+    price: 240,
+    weight: 10
+  },
+  {
+    name: "Karambit | Universe",
+    img: "https://cdn.standoff2case.ru/skins/karambit-universe.png",
+    price: 9500,
+    weight: 0.00005
+  },
+  {
+    name: "AKR12 | Steam Beast",
+    img: "https://cdn.standoff2case.ru/skins/akr12-steam-beast.png",
+    price: 350,
+    weight: 6
+  },
+  {
+    name: "M16 | Winged",
+    img: "https://cdn.standoff2case.ru/skins/m16-winged.png",
+    price: 310,
+    weight: 8
+  },
+  {
+    name: "AWM | Treasure Hunter",
+    img: "https://cdn.standoff2case.ru/skins/awm-treasure-hunter.png",
+    price: 3000,
+    weight: 0.5
+  },
+  {
+    name: "Desert Eagle | Ace",
+    img: "https://cdn.standoff2case.ru/skins/deagle-ace.png",
+    price: 190,
+    weight: 13
+  },
+  {
+    name: "USP | Shark",
+    img: "https://cdn.standoff2case.ru/skins/usp-shark.png",
+    price: 260,
+    weight: 10
+  },
+  {
+    name: "FAMAS | Fury",
+    img: "https://cdn.standoff2case.ru/skins/famas-fury.png",
+    price: 200,
+    weight: 11
+  },
+  {
+    name: "Karambit | Gold",
+    img: "https://cdn.standoff2case.ru/skins/karambit-gold.png",
+    price: 11000,
+    weight: 0.00001
+  }
+];
+
+
+
+
+
+const bb = [
+  {
+    name: "AKR | Carbon",
+    img: "https://cdn.standoff2case.ru/skins/akr-carbon.png",
+    price: 85,
+    weight: 20
+  },
+  {
+    name: "M4 | Lizard",
+    img: "https://cdn.standoff2case.ru/skins/m4-lizard.png",
+    price: 95,
+    weight: 18
+  },
+  {
+    name: "AWM | Scratch",
+    img: "https://cdn.standoff2case.ru/skins/awm-scratch.png",
+    price: 140,
+    weight: 10
+  },
+  {
+    name: "Desert Eagle | Predator",
+    img: "https://cdn.standoff2case.ru/skins/deagle-predator.png",
+    price: 60,
+    weight: 22
+  },
+  {
+    name: "USP | Line",
+    img: "https://cdn.standoff2case.ru/skins/usp-line.png",
+    price: 40,
+    weight: 25
+  },
+  {
+    name: "FAMAS | Autumn",
+    img: "https://cdn.standoff2case.ru/skins/famas-autumn.png",
+    price: 75,
+    weight: 23
+  },
+  {
+    name: "G22 | Frost Wyrm",
+    img: "https://cdn.standoff2case.ru/skins/g22-frost-wyrm.png",
+    price: 110,
+    weight: 12
+  },
+  {
+    name: "P90 | Samurai",
+    img: "https://cdn.standoff2case.ru/skins/p90-samurai.png",
+    price: 120,
+    weight: 11
+  },
+  {
+    name: "AKR12 | Railgun",
+    img: "https://cdn.standoff2case.ru/skins/akr12-railgun.png",
+    price: 135,
+    weight: 9
+  },
+  {
+    name: "MP7 | Offroad",
+    img: "https://cdn.standoff2case.ru/skins/mp7-offroad.png",
+    price: 30,
+    weight: 30
+  },
+  {
+    name: "M16 | Winged",
+    img: "https://cdn.standoff2case.ru/skins/m16-winged.png",
+    price: 130,
+    weight: 7
+  },
+  {
+    name: "AWM | Field Strike",
+    img: "https://cdn.standoff2case.ru/skins/awm-field-strike.png",
+    price: 90,
+    weight: 15
+  },
+  {
+    name: "Desert Eagle | Blue Blood",
+    img: "https://cdn.standoff2case.ru/skins/deagle-blue-blood.png",
+    price: 125,
+    weight: 8
+  },
+  {
+    name: "USP | Night Wolf",
+    img: "https://cdn.standoff2case.ru/skins/usp-night-wolf.png",
+    price: 145,
+    weight: 6
+  },
+  {
+    name: "FAMAS | Fury",
+    img: "https://cdn.standoff2case.ru/skins/famas-fury.png",
+    price: 100,
+    weight: 14
+  },
+  {
+    name: "MAC10 | Toxic",
+    img: "https://cdn.standoff2case.ru/skins/mac10-toxic.png",
+    price: 80,
+    weight: 17
+  },
+  {
+    name: "UMP45 | Cyberpunk",
+    img: "https://cdn.standoff2case.ru/skins/ump45-cyberpunk.png",
+    price: 105,
+    weight: 10
+  },
+  {
+    name: "MP5 | Tech",
+    img: "https://cdn.standoff2case.ru/skins/mp5-tech.png",
+    price: 70,
+    weight: 18
+  },
+  {
+    name: "M4 | Spectre",
+    img: "https://cdn.standoff2case.ru/skins/m4-spectre.png",
+    price: 140,
+    weight: 5
+  },
+  {
+    name: "AKR | Nano",
+    img: "https://cdn.standoff2case.ru/skins/akr-nano.png",
+    price: 95,
+    weight: 20
+  },
+  {
+    name: "G22 | Pixel",
+    img: "https://cdn.standoff2case.ru/skins/g22-pixel.png",
+    price: 65,
+    weight: 22
+  },
+  {
+    name: "TEC-9 | Samurai",
+    img: "https://cdn.standoff2case.ru/skins/tec9-samurai.png",
+    price: 115,
+    weight: 12
+  },
+  {
+    name: "AKR12 | Carbon",
+    img: "https://cdn.standoff2case.ru/skins/akr12-carbon.png",
+    price: 85,
+    weight: 15
+  },
+  {
+    name: "P90 | Tiger",
+    img: "https://cdn.standoff2case.ru/skins/p90-tiger.png",
+    price: 100,
+    weight: 14
+  },
+  {
+    name: "M16 | Leaf",
+    img: "https://cdn.standoff2case.ru/skins/m16-leaf.png",
+    price: 50,
+    weight: 25
+  },
+  {
+    name: "AWM | Forest Spirit",
+    img: "https://cdn.standoff2case.ru/skins/awm-forest-spirit.png",
+    price: 145,
+    weight: 7
+  },
+  {
+    name: "Desert Eagle | Flame",
+    img: "https://cdn.standoff2case.ru/skins/deagle-flame.png",
+    price: 135,
+    weight: 9
+  },
+  {
+    name: "USP | Orion",
+    img: "https://cdn.standoff2case.ru/skins/usp-orion.png",
+    price: 125,
+    weight: 10
+  },
+  {
+    name: "FAMAS | Carbon",
+    img: "https://cdn.standoff2case.ru/skins/famas-carbon.png",
+    price: 95,
+    weight: 19
+  },
+  {
+    name: "G22 | Starfall",
+    img: "https://cdn.standoff2case.ru/skins/g22-starfall.png",
+    price: 105,
+    weight: 11
+  },
+  {
+    name: "MP7 | Blaster",
+    img: "https://cdn.standoff2case.ru/skins/mp7-blaster.png",
+    price: 85,
+    weight: 15
+  },
+  {
+    name: "AKR | Flow",
+    img: "https://cdn.standoff2case.ru/skins/akr-flow.png",
+    price: 110,
+    weight: 12
+  },
+  {
+    name: "M4 | Pixel Storm",
+    img: "https://cdn.standoff2case.ru/skins/m4-pixel-storm.png",
+    price: 125,
+    weight: 10
+  },
+  {
+    name: "UMP45 | Shark",
+    img: "https://cdn.standoff2case.ru/skins/ump45-shark.png",
+    price: 140,
+    weight: 8
+  },
+  {
+    name: "MAC10 | Neon",
+    img: "https://cdn.standoff2case.ru/skins/mac10-neon.png",
+    price: 95,
+    weight: 20
+  },
+  {
+    name: "TEC-9 | Carbon",
+    img: "https://cdn.standoff2case.ru/skins/tec9-carbon.png",
+    price: 90,
+    weight: 19
+  },
+  {
+    name: "P90 | Flow",
+    img: "https://cdn.standoff2case.ru/skins/p90-flow.png",
+    price: 115,
+    weight: 13
+  },
+  {
+    name: "AKR12 | Frost",
+    img: "https://cdn.standoff2case.ru/skins/akr12-frost.png",
+    price: 125,
+    weight: 11
+  },
+  {
+    name: "M16 | Aurora",
+    img: "https://cdn.standoff2case.ru/skins/m16-aurora.png",
+    price: 110,
+    weight: 10
+  },
+  {
+    name: "MP5 | Snake",
+    img: "https://cdn.standoff2case.ru/skins/mp5-snake.png",
+    price: 100,
+    weight: 15
+  }
+];
+
+const sb = [
+  { name: "USP | Sugar Rush", img: "https://cdn.standoff2case.ru/skins/usp-genesis.png", price: 16, weight: 25 },
+  { name: "G22 | Candy Cane", img: "https://cdn.standoff2case.ru/skins/g22-pixel.png", price: 14, weight: 30 },
+  { name: "MP5 | Bubblegum", img: "https://cdn.standoff2case.ru/skins/mp5-tech.png", price: 15, weight: 28 },
+  { name: "FAMAS | Gummy", img: "https://cdn.standoff2case.ru/skins/famas-autumn.png", price: 17, weight: 23 },
+  { name: "Desert Eagle | Sprinkle", img: "https://cdn.standoff2case.ru/skins/deagle-predator.png", price: 10, weight: 18 },
+  { name: "MAC10 | Caramel", img: "https://cdn.standoff2case.ru/skins/mac10-neon.png", price: 31, weight: 30 },
+  { name: "M4 | Cotton Candy", img: "https://cdn.standoff2case.ru/skins/m4-pixel-storm.png", price: 18, weight: 20 },
+  { name: "AKR | Marshmallow", img: "https://cdn.standoff2case.ru/skins/akr-carbon.png", price: 16, weight: 24 },
+  { name: "AWM | Frosted", img: "https://cdn.standoff2case.ru/skins/awm-field-strike.png", price: 12, weight: 16 },
+  { name: "P90 | Jelly", img: "https://cdn.standoff2case.ru/skins/p90-samurai.png", price: 19, weight: 19 },
+  { name: "M16 | Lollipop", img: "https://cdn.standoff2case.ru/skins/m16-leaf.png", price: 15, weight: 25 },
+  { name: "TEC-9 | Cream", img: "https://cdn.standoff2case.ru/skins/tec9-samurai.png", price: 17, weight: 22 },
+  { name: "UMP45 | Candy Skull", img: "https://cdn.standoff2case.ru/skins/ump45-shark.png", price: 11, weight: 15 },
+  { name: "Karambit | Sugar Fang", img: "https://cdn.standoff2case.ru/skins/karambit-claw.png", price: 90, weight: 0.01 },
+  { name: "AKR12 | Strawberry", img: "https://cdn.standoff2case.ru/skins/akr12-carbon.png", price: 132, weight: 14 },
+  { name: "MP7 | Milkshake", img: "https://cdn.standoff2case.ru/skins/mp7-blaster.png", price: 14, weight: 30 },
+  { name: "G22 | Donut", img: "https://cdn.standoff2case.ru/skins/g22-starfall.png", price: 22, weight: 33 },
+  { name: "Desert Eagle | Candy Flame", img: "https://cdn.standoff2case.ru/skins/deagle-flame.png", price: 20, weight: 10 },
+  { name: "USP | Berry Cream", img: "https://cdn.standoff2case.ru/skins/usp-line.png", price: 28, weight: 18 },
+  { name: "MAC10 | Cotton Rush", img: "https://cdn.standoff2case.ru/skins/mac10-toxic.png", price: 6, weight: 20 },
+  { name: "AKR | Toffee", img: "https://cdn.standoff2case.ru/skins/akr-nano.png", price: 25, weight: 25 },
+  { name: "AWM | Ice Cream", img: "https://cdn.standoff2case.ru/skins/awm-scratch.png", price: 15, weight: 7 },
+  { name: "M4 | Jelly Rush", img: "https://cdn.standoff2case.ru/skins/m4-lizard.png", price: 16, weight: 20 },
+  { name: "P90 | Sweet Dreams", img: "https://cdn.standoff2case.ru/skins/p90-tiger.png", price: 9, weight: 17 },
+  { name: "USP | Bubbleblast", img: "https://cdn.standoff2case.ru/skins/usp-shark.png", price: 10, weight: 13 },
+  { name: "UMP45 | Chocolate", img: "https://cdn.standoff2case.ru/skins/ump45-cyberpunk.png", price: 11, weight: 10 },
+  { name: "FAMAS | Strawberry Jam", img: "https://cdn.standoff2case.ru/skins/famas-fury.png", price: 14, weight: 11 },
+  { name: "MP5 | Frostbite", img: "https://cdn.standoff2case.ru/skins/mp5-snake.png", price: 13, weight: 28 },
+  { name: "AKR12 | Popcorn", img: "https://cdn.standoff2case.ru/skins/akr12-frost.png", price: 12, weight: 26 },
+  { name: "Desert Eagle | Ice Pop", img: "https://cdn.standoff2case.ru/skins/deagle-blue-blood.png", price: 16, weight: 6 },
+  { name: "MAC10 | Rainbow", img: "https://cdn.standoff2case.ru/skins/mac10-neon.png", price: 6, weight: 24 },
+  { name: "AKR | Sweet Riot", img: "https://cdn.standoff2case.ru/skins/akr-flow.png", price: 13, weight: 12 },
+  { name: "M16 | Raspberry", img: "https://cdn.standoff2case.ru/skins/m16-aurora.png", price: 7, weight: 21 },
+  { name: "AWM | Dream Candy", img: "https://cdn.standoff2case.ru/skins/awm-gear.png", price: 28, weight: 3 },
+  { name: "G22 | Sugar Rush", img: "https://cdn.standoff2case.ru/skins/g22-frost-wyrm.png", price: 10, weight: 12 },
+  { name: "UMP45 | Chewy Blast", img: "https://cdn.standoff2case.ru/skins/ump45-cyberpunk.png", price: 17, weight: 17 },
+  { name: "M4 | Berry Blast", img: "https://cdn.standoff2case.ru/skins/m4-grand-prix.png", price: 18, weight: 8 },
+  { name: "USP | Candy Storm", img: "https://cdn.standoff2case.ru/skins/usp-orion.png", price: 13, weight: 13 },
+  { name: "TEC-9 | Gumball", img: "https://cdn.standoff2case.ru/skins/tec9-carbon.png", price: 15, weight: 26 },
+  { name: "Karambit | Sweet Bite", img: "https://cdn.standoff2case.ru/skins/karambit-universe.png", price: 10000000, weight: 0.005 },
+  { name: "AWM | Caramel Core", img: "https://cdn.standoff2case.ru/skins/awm-phoenix.png", price: 320, weight: 2 },
+  { name: "P90 | Candy Killer", img: "https://cdn.standoff2case.ru/skins/p90-flow.png", price: 199, weight: 20 },
+  { name: "AKR12 | Frosting", img: "https://cdn.standoff2case.ru/skins/akr12-railgun.png", price: 11, weight: 10 },
+  { name: "MP7 | Whip", img: "https://cdn.standoff2case.ru/skins/mp7-offroad.png", price: 9, weight: 27 },
+  { name: "FAMAS | Caramel Splash", img: "https://cdn.standoff2case.ru/skins/famas-handcraft.png", price: 6, weight: 23 },
+  { name: "M16 | Sugar Coat", img: "https://cdn.standoff2case.ru/skins/m16-winged.png", price: 13, weight: 10 },
+  { name: "USP | Cotton Shot", img: "https://cdn.standoff2case.ru/skins/usp-pisces.png", price: 12, weight: 9 },
+  { name: "MAC10 | Choco Pop", img: "https://cdn.standoff2case.ru/skins/mac10-toxic.png", price: 9, weight: 16 }
+];
+
+const bt = [
+  { name: "G22 | Pixel", img: "https://cdn.standoff2case.ru/skins/g22-pixel.png", price: 8, weight: 35 },
+  { name: "USP | Line", img: "https://cdn.standoff2case.ru/skins/usp-line.png", price: 7, weight: 32 },
+  { name: "FAMAS | Autumn", img: "https://cdn.standoff2case.ru/skins/famas-autumn.png", price: 19, weight: 28 },
+  { name: "MP5 | Tech", img: "https://cdn.standoff2case.ru/skins/mp5-tech.png", price: 8, weight: 30 },
+  { name: "M4 | Pixel Storm", img: "https://cdn.standoff2case.ru/skins/m4-pixel-storm.png", price: 14, weight: 25 },
+  { name: "AKR | Carbon", img: "https://cdn.standoff2case.ru/skins/akr-carbon.png", price: 13, weight: 29 },
+  { name: "AWM | Field Strike", img: "https://cdn.standoff2case.ru/skins/awm-field-strike.png", price: 5, weight: 22 },
+  { name: "P90 | Samurai", img: "https://cdn.standoff2case.ru/skins/p90-samurai.png", price: 9, weight: 24 },
+  { name: "M16 | Leaf", img: "https://cdn.standoff2case.ru/skins/m16-leaf.png", price: 7, weight: 27 },
+  { name: "TEC-9 | Samurai", img: "https://cdn.standoff2case.ru/skins/tec9-samurai.png", price: 9, weight: 28 },
+  { name: "UMP45 | Shark", img: "https://cdn.standoff2case.ru/skins/ump45-shark.png", price: 14, weight: 20 },
+  { name: "MAC10 | Neon", img: "https://cdn.standoff2case.ru/skins/mac10-neon.png", price: 12, weight: 34 },
+  { name: "AKR12 | Carbon", img: "https://cdn.standoff2case.ru/skins/akr12-carbon.png", price: 12, weight: 21 },
+  { name: "MP7 | Blaster", img: "https://cdn.standoff2case.ru/skins/mp7-blaster.png", price: 330, weight: 5 },
+  { name: "Desert Eagle | Predator", img: "https://cdn.standoff2case.ru/skins/deagle-predator.png", price: 12, weight: 20 },
+  { name: "USP | Pisces", img: "https://cdn.standoff2case.ru/skins/usp-pisces.png", price: 25, weight: 8 },
+  { name: "AKR | Nano", img: "https://cdn.standoff2case.ru/skins/akr-nano.png", price: 13, weight: 28 },
+  { name: "M4 | Lizard", img: "https://cdn.standoff2case.ru/skins/m4-lizard.png", price: 4, weight: 20 },
+  { name: "G22 | Frost Wyrm", img: "https://cdn.standoff2case.ru/skins/g22-frost-wyrm.png", price: 16, weight: 19 },
+  { name: "FAMAS | Fury", img: "https://cdn.standoff2case.ru/skins/famas-fury.png", price: 9, weight: 9 },
+  { name: "MP5 | Snake", img: "https://cdn.standoff2case.ru/skins/mp5-snake.png", price: 9, weight: 26 },
+  { name: "UMP45 | Cyberpunk", img: "https://cdn.standoff2case.ru/skins/ump45-cyberpunk.png", price: 5, weight: 12 },
+  { name: "Desert Eagle | Flame", img: "https://cdn.standoff2case.ru/skins/deagle-flame.png", price: 7, weight: 8 },
+  { name: "AKR12 | Frost", img: "https://cdn.standoff2case.ru/skins/akr12-frost.png", price: 5, weight: 11 },
+  { name: "M16 | Aurora", img: "https://cdn.standoff2case.ru/skins/m16-aurora.png", price: 0, weight: 18 },
+  { name: "TEC-9 | Carbon", img: "https://cdn.standoff2case.ru/skins/tec9-carbon.png", price: 9, weight: 26 },
+  { name: "AWM | Scratch", img: "https://cdn.standoff2case.ru/skins/awm-scratch.png", price: 9, weight: 10 },
+  { name: "AKR | Flow", img: "https://cdn.standoff2case.ru/skins/akr-flow.png", price: 0, weight: 14 },
+  { name: "MAC10 | Toxic", img: "https://cdn.standoff2case.ru/skins/mac10-toxic.png", price: 12, weight: 25 },
+  { name: "USP | Orion", img: "https://cdn.standoff2case.ru/skins/usp-orion.png", price: 5, weight: 13 },
+  { name: "M4 | Grand Prix", img: "https://cdn.standoff2case.ru/skins/m4-grand-prix.png", price: 6, weight: 9 },
+  { name: "UMP45 | Shark", img: "https://cdn.standoff2case.ru/skins/ump45-shark.png", price: 12, weight: 21 },
+  { name: "G22 | Starfall", img: "https://cdn.standoff2case.ru/skins/g22-starfall.png", price: 12, weight: 30 },
+  { name: "P90 | Tiger", img: "https://cdn.standoff2case.ru/skins/p90-tiger.png", price: 15, weight: 15 },
+  { name: "FAMAS | Beagle", img: "https://cdn.standoff2case.ru/skins/famas-beagle.png", price: 6, weight: 10 },
+  { name: "AKR12 | Railgun", img: "https://cdn.standoff2case.ru/skins/akr12-railgun.png", price: 6, weight: 7 },
+  { name: "MAC10 | Toxic (Alt)", img: "https://cdn.standoff2case.ru/skins/mac10-toxic.png", price: 12, weight: 34 },
+  { name: "AWM | Gear", img: "https://cdn.standoff2case.ru/skins/awm-gear.png", price: 80, weight: 4 },
+  { name: "USP | Shark", img: "https://cdn.standoff2case.ru/skins/usp-shark.png", price: 9, weight: 9 },
+  { name: "Karambit | Claw", img: "https://cdn.standoff2case.ru/skins/karambit-claw.png", price: 70, weight: 0.01 }, // очень редкий
+  { name: "P90 | Flow", img: "https://cdn.standoff2case.ru/skins/p90-flow.png", price: 12, weight: 20 },
+  { name: "M16 | Winged", img: "https://cdn.standoff2case.ru/skins/m16-winged.png", price: 12, weight: 7 },
+  { name: "USP | Genesis", img: "https://cdn.standoff2case.ru/skins/usp-genesis.png", price: 9, weight: 3 },
+  { name: "MP7 | Offroad", img: "https://cdn.standoff2case.ru/skins/mp7-offroad.png", price: 12, weight: 28 },
+  { name: "FAMAS | Handcraft", img: "https://cdn.standoff2case.ru/skins/famas-handcraft.png", price: 9, weight: 7 },
+  { name: "Desert Eagle | Dragon Glass", img: "https://cdn.standoff2case.ru/skins/deagle-dragon-glass.png", price: 10, weight: 2 },
+  { name: "Karambit | Universe", img: "https://cdn.standoff2case.ru/skins/karambit-universe.png", price: 80, weight: 0.005 }, // ультра-редкий
+  { name: "AWM | Phoenix", img: "https://cdn.standoff2case.ru/skins/awm-phoenix.png", price: 10, weight: 1.5 },
+  { name: "USP | Bubbleblast", img: "OIP.jpg", price: 12, weight: 5 },
+  { name: "MAC10 | Rainbow", img: "https://cdn.standoff2case.ru/skins/mac10-neon.png", price: 88, weight: 27 }
+];
+
+
+const sz = [
+  { name: "G22 | Pixel", img: "https://cdn.standoff2case.ru/skins/g22-pixel.png", price: 800000000000, weight: 35 },
+  { name: "USP | Line", img: "https://cdn.standoff2case.ru/skins/usp-line.png", price: 70000000000, weight: 32 },
+  { name: "FAMAS | Autumn", img: "https://cdn.standoff2case.ru/skins/famas-autumn.png", price: 190000000000, weight: 28 },
+  { name: "MP5 | Tech", img: "https://cdn.standoff2case.ru/skins/mp5-tech.png", price: 8, weight: 3 },
+  { name: "M4 | Pixel Storm", img: "https://cdn.standoff2case.ru/skins/m4-pixel-storm.png", price: 1400000000000000, weight: 25 },
+  ];
+
+  const mz = [
+  { name: "G22 | Pixel", img: "https://cdn.standoff2case.ru/skins/g22-pixel.png", price: 8000, weight: 35 },
+  { name: "USP | Line", img: "https://cdn.standoff2case.ru/skins/usp-line.png", price: 70, weight: 32 },
+  { name: "FAMAS | Autumn", img: "https://cdn.standoff2case.ru/skins/famas-autumn.png", price: 1900, weight: 28 },
+  { name: "MP5 | Tech", img: "https://cdn.standoff2case.ru/skins/mp5-tech.png", price: 800, weight: 30 },
+  { name: "M4 | Pixel Storm", img: "https://cdn.standoff2case.ru/skins/m4-pixel-storm.png", price: 1400, weight: 25 },
+  ];
+
+  const br = [
+  { name: "AKR | Космос", img: "https://cdn.standoff2case.ru/skins/akr-cosmos.png", price: 150, weight: 20 },
+  { name: "G22 | Песок", img: "https://cdn.standoff2case.ru/skins/g22-sand.png", price: 180, weight: 40 },
+  { name: "AWM | Огненная душа", img: "https://cdn.standoff2case.ru/skins/awm-fire-soul.png", price: 300, weight: 10 },
+  { name: "FAMAS | Ураган", img: "https://cdn.standoff2case.ru/skins/famas-hurricane.png", price: 180, weight: 20 },
+  { name: "P90 | Буря", img: "https://cdn.standoff2case.ru/skins/p90-storm.png", price: 200, weight: 30 },
+  { name: "MAC10 | Электрика", img: "https://cdn.standoff2case.ru/skins/mac10-electric.png", price: 120, weight: 28 },
+  { name: "Desert Eagle | Кобра", img: "https://cdn.standoff2case.ru/skins/deagle-cobra.png", price: 208, weight: 15 },
+  { name: "MP7 | Страж", img: "https://cdn.standoff2case.ru/skins/mp7-guardian.png", price: 140, weight: 18 },
+  { name: "G22 | Вихрь", img: "https://cdn.standoff2case.ru/skins/g22-vortex.png", price: 180, weight: 35 },
+  { name: "AWM | Лунный камень", img: "https://cdn.standoff2case.ru/skins/awm-moonstone.png", price: 20, weight: 12 },
+  { name: "M16 | Рубин", img: "https://cdn.standoff2case.ru/skins/m16-ruby.png", price: 110, weight: 40 },
+  { name: "AK47 | Пламя", img: "https://cdn.standoff2case.ru/skins/ak47-flame.png", price: 250, weight: 20 },
+  { name: "MAC10 | Осколок", img: "https://cdn.standoff2case.ru/skins/mac10-shard.png", price: 250, weight: 30 },
+  { name: "USP | Смерть", img: "https://cdn.standoff2case.ru/skins/usp-death.png", price: 180, weight: 25 },
+  { name: "M4A1 | Зомби", img: "https://cdn.standoff2case.ru/skins/m4a1-zombie.png", price: 220, weight: 20 },
+  { name: "Desert Eagle | Тень", img: "https://cdn.standoff2case.ru/skins/deagle-shadow.png", price: 107, weight: 10 },
+  { name: "UMP45 | Звезда", img: "https://cdn.standoff2case.ru/skins/ump45-star.png", price: 200, weight: 28 },
+  { name: "MP5 | Призрак", img: "https://cdn.standoff2case.ru/skins/mp5-ghost.png", price: 14, weight: 35 },
+  { name: "M16 | Молния", img: "https://cdn.standoff2case.ru/skins/m16-lightning.png", price: 210, weight: 40 },
+  { name: "G22 | Сапфир", img: "https://cdn.standoff2case.ru/skins/g22-sapphire.png", price: 150, weight: 30 },
+  { name: "P90 | Звезда", img: "https://cdn.standoff2case.ru/skins/p90-star.png", price: 180, weight: 20 },
+  { name: "AKR | Снайпер", img: "https://cdn.standoff2case.ru/skins/akr-sniper.png", price: 100, weight: 25 },
+  { name: "Karambit | Ядовитая рука", img: "https://cdn.standoff2case.ru/skins/karambit-poison.png", price: 60, weight: 0.02 },
+  { name: "M4 | Вулкан", img: "https://cdn.standoff2case.ru/skins/m4-vulkan.png", price: 202, weight: 18 },
+  { name: "AWM | Зимний лес", img: "https://cdn.standoff2case.ru/skins/awm-winter-forest.png", price: 300, weight: 15 },
+  { name: "USP | Стальная рука", img: "https://cdn.standoff2case.ru/skins/usp-steel-hand.png", price: 280, weight: 20 },
+  { name: "MP7 | Солнечный свет", img: "https://cdn.standoff2case.ru/skins/mp7-sunlight.png", price: 180, weight: 25 },
+  { name: "G22 | Светящийся", img: "https://cdn.standoff2case.ru/skins/g22-glowing.png", price: 140, weight: 30 },
+  { name: "M16 | Дракон", img: "https://cdn.standoff2case.ru/skins/m16-dragon.png", price: 120, weight: 18 },
+  { name: "P90 | Мороз", img: "https://cdn.standoff2case.ru/skins/p90-frost.png", price: 150, weight: 20 },
+  { name: "AK47 | Призрак", img: "https://cdn.standoff2case.ru/skins/ak47-ghost.png", price: 200, weight: 30 },
+  { name: "M4A1 | Страж", img: "https://cdn.standoff2case.ru/skins/m4a1-guardian.png", price: 180, weight: 25 },
+  { name: "Desert Eagle | Властелин", img: "https://cdn.standoff2case.ru/skins/deagle-lord.png", price: 30, weight: 15 }
+  // и так далее, чтобы составить 70 скинов
+];
+
+const nm = [
+  { name: "AK47 | Звезда", img: "https://cdn.standoff2case.ru/skins/ak47-star.png", price: 45, weight: 40 },
+  { name: "M4A1 | Вулкан", img: "https://cdn.standoff2case.ru/skins/m4a1-vulkan.png", price: 50, weight: 35 },
+  { name: "USP | Золотая линия", img: "https://cdn.standoff2case.ru/skins/usp-gold-line.png", price: 39, weight: 45 },
+  { name: "Desert Eagle | Магма", img: "https://cdn.standoff2case.ru/skins/deagle-magma.png", price: 60, weight: 15 },
+  { name: "M16 | Космос", img: "https://cdn.standoff2case.ru/skins/m16-cosmos.png", price: 55, weight: 30 },
+  { name: "P90 | Солнечный удар", img: "https://cdn.standoff2case.ru/skins/p90-sunstrike.png", price: 49, weight: 28 },
+  { name: "AWM | Ледяная пыль", img: "https://cdn.standoff2case.ru/skins/awm-ice-dust.png", price: 65, weight: 20 },
+  { name: "MP5 | Тёмная звезда", img: "https://cdn.standoff2case.ru/skins/mp5-dark-star.png", price: 42, weight: 35 },
+  { name: "FAMAS | Буря", img: "https://cdn.standoff2case.ru/skins/famas-storm.png", price: 40, weight: 18 },
+  { name: "TEC-9 | Осколок", img: "https://cdn.standoff2case.ru/skins/tec9-shard.png", price: 48, weight: 25 },
+  { name: "UMP45 | Молния", img: "https://cdn.standoff2case.ru/skins/ump45-lightning.png", price: 52, weight: 30 },
+  { name: "MAC10 | Электрический", img: "https://cdn.standoff2case.ru/skins/mac10-electric.png", price: 43, weight: 40 },
+  { name: "M4 | Феникс", img: "https://cdn.standoff2case.ru/skins/m4-phoenix.png", price: 58, weight: 25 },
+  { name: "AKR | Древний", img: "https://cdn.standoff2case.ru/skins/akr-ancient.png", price: 60, weight: 20 },
+  { name: "G22 | Ветры", img: "https://cdn.standoff2case.ru/skins/g22-winds.png", price: 41, weight: 40 },
+  { name: "AWM | Лунный свет", img: "https://cdn.standoff2case.ru/skins/awm-moonlight.png", price: 69, weight: 12 },
+  { name: "FAMAS | Тень", img: "https://cdn.standoff2case.ru/skins/famas-shadow.png", price: 55, weight: 15 },
+  { name: "P90 | Звезда", img: "https://cdn.standoff2case.ru/skins/p90-star.png", price: 50, weight: 28 },
+  { name: "MAC10 | Роса", img: "https://cdn.standoff2case.ru/skins/mac10-dew.png", price: 45, weight: 24 },
+  { name: "Desert Eagle | Призрак", img: "https://cdn.standoff2case.ru/skins/deagle-ghost.png", price: 65, weight: 10 },
+  { name: "MP7 | Тёмная душа", img: "https://cdn.standoff2case.ru/skins/mp7-dark-soul.png", price: 41, weight: 18 },
+  { name: "G22 | Огненная душа", img: "https://cdn.standoff2case.ru/skins/g22-fire-soul.png", price: 47, weight: 30 },
+  { name: "AWM | Ядовитая", img: "https://cdn.standoff2case.ru/skins/awm-poison.png", price: 72, weight: 6 },
+  { name: "M16 | Огонь", img: "https://cdn.standoff2case.ru/skins/m16-fire.png", price: 50, weight: 35 },
+  { name: "AK47 | Солнце", img: "https://cdn.standoff2case.ru/skins/ak47-sun.png", price: 62, weight: 15 },
+  { name: "MAC10 | Вихрь", img: "https://cdn.standoff2case.ru/skins/mac10-vortex.png", price: 39, weight: 20 },
+  { name: "USP | Песок", img: "https://cdn.standoff2case.ru/skins/usp-sand.png", price: 47, weight: 25 },
+  { name: "FAMAS | Древний огонь", img: "https://cdn.standoff2case.ru/skins/famas-ancient-flame.png", price: 58, weight: 30 },
+  { name: "P90 | Ледяная буря", img: "https://cdn.standoff2case.ru/skins/p90-ice-storm.png", price: 65, weight: 18 },
+  { name: "AWM | Лавовый поток", img: "https://cdn.standoff2case.ru/skins/awm-lava-flow.png", price: 70, weight: 12 },
+  { name: "G22 | Тёмный рыцарь", img: "https://cdn.standoff2case.ru/skins/g22-dark-knight.png", price: 50, weight: 20 },
+  { name: "Desert Eagle | Золотая змея", img: "https://cdn.standoff2case.ru/skins/deagle-golden-snake.png", price: 60, weight: 25 },
+  { name: "MP5 | Ночь", img: "https://cdn.standoff2case.ru/skins/mp5-night.png", price: 41, weight: 30 },
+  { name: "MAC10 | Разрушитель", img: "https://cdn.standoff2case.ru/skins/mac10-destroyer.png", price: 43, weight: 28 },
+  { name: "M16 | Призрак", img: "https://cdn.standoff2case.ru/skins/m16-ghost.png", price: 48, weight: 35 },
+  { name: "AKR | Древняя сталь", img: "https://cdn.standoff2case.ru/skins/akr-ancient-steel.png", price: 64, weight: 20 },
+  { name: "AWM | Пламя", img: "https://cdn.standoff2case.ru/skins/awm-flame.png", price: 72, weight: 8 },
+  { name: "M4A1 | Легенда", img: "https://cdn.standoff2case.ru/skins/m4a1-legend.png", price: 56, weight: 30 },
+  { name: "Desert Eagle | Лед", img: "https://cdn.standoff2case.ru/skins/deagle-ice.png", price: 70, weight: 6 },
+  { name: "FAMAS | Огонь", img: "https://cdn.standoff2case.ru/skins/famas-fire.png", price: 59, weight: 22 },
+  { name: "MP7 | Ветры", img: "https://cdn.standoff2case.ru/skins/mp7-wind.png", price: 49, weight: 18 }
+];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Функция для выбора скина с учетом веса
+function getSkin(skins) {
+  const totalWeight = skins.reduce((sum, skin) => sum + skin.weight, 0);
+  const randomWeight = Math.random() * totalWeight;
+
+  let weightSum = 0.0000000000000000005;
+  for (const skin of skins) {
+    weightSum += skin.weight;
+    if (randomWeight <= weightSum) {
+      return skin;
+    }
+  }
+}
+
+// Пример использования
+const chosenSkin = getSkin(cheapistSkins);
+console.log(chosenSkin);
+
+    let isSpinning = false;
+    let lastCase = null;
+    lastSkin = getSkin(skinPool);
+
+
+    
+
+    // Функция для преобразования строки баланса в число
+    function parseBalance(balanceStr) {
+      return parseInt(balanceStr.replace(/[^\d]/g, ''));
+    }
+
+    // Функция для форматирования числа в денежный формат
+    function formatMoney(amount) {
+      return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "₽";
+    }
+
+    function openCase(price, skinPool) {
+      if (isSpinning) return;
+      
+      const currentBalance = parseBalance(balanceDisplay.textContent);
+      if (currentBalance < price) {
+        alert(`Недостаточно средств! Нужно ${formatMoney(price)} (У вас: ${formatMoney(currentBalance)})`);
+        return;
+      }
+
+      lastCase = { price, skinPool };
+      isSpinning = true;
+      document.querySelectorAll('.case').forEach(c => c.classList.add('case-disabled'));
+
+      // Списываем деньги
+      balanceDisplay.textContent = formatMoney(currentBalance - price);
+
+      // Генерируем полосу для анимации
+      stripInner.innerHTML = '';
+      for (let i = 0; i < 30; i++) {
+        const randomSkin = skinPool[Math.floor(Math.random() * skinPool.length)];
+        const item = document.createElement('div');
+        item.className = 'strip-item';
+        item.textContent = randomSkin.name;
+        stripInner.appendChild(item);
+      }
+
+      // Показываем колесо
+      wheelContainer.style.display = 'flex';
+      drop.style.display = 'none';
+
+      // Запускаем анимацию
+      skinStrip.classList.add('spinning');
+
+      // Через 3 секунды останавливаемся и показываем результат
+      setTimeout(() => {
+        skinStrip.classList.remove('spinning');
+        lastSkin = skinPool[Math.floor(Math.random() * skinPool.length)];
+        showDrop(lastSkin);
+        isSpinning = false;
+      }, 850);
+    }
+
+    function spinAgain() {
+      if (lastCase) {
+        openCase(lastCase.price, lastCase.skinPool);
+      }
+    }
+
+    function sellDrop() {
+      if (!lastSkin) return;
+      
+      const currentBalance = parseBalance(balanceDisplay.textContent);
+      balanceDisplay.textContent = formatMoney(currentBalance + lastSkin.price);
+      alert(`Продано: ${lastSkin.name} за ${formatMoney(lastSkin.price)}!`);
+      closeWheel();
+    }
+
+    function showDrop(skin) {
+      drop.style.display = 'block';
+      dropImg.src = skin.img;
+      dropName.textContent = `${skin.name} — ${formatMoney(skin.price)}`;
+      addToInventory(skin);
+    }
+
+    function addToInventory(skin) {
+      const itemDiv = document.createElement('div');
+      itemDiv.classList.add('inventory-item');
+      
+      itemDiv.innerHTML = `
+        <img class="item-img" src="${skin.img}" alt="${skin.name}">
+        <div class="item-name">${skin.name}</div>
+        <div class="item-price">${formatMoney(skin.price)}</div>
+        <button class="item-sell-btn" onclick="sellItem(this, ${skin.price})">Продать</button>
+      `;
+      
+      inventoryContainer.appendChild(itemDiv);
+    }
+
+    function sellItem(button, price) {
+      const item = button.parentElement;
+      item.remove();
+      
+      const currentBalance = parseBalance(balanceDisplay.textContent);
+      balanceDisplay.textContent = formatMoney(currentBalance + price);
+      
+      alert(`Продан за ${formatMoney(price)}!`);
+    }
+
+    function closeWheel() {
+      wheelContainer.style.display = 'none';
+      document.querySelectorAll('.case').forEach(c => c.classList.remove('case-disabled'));
+    }
+
+    function showTopUp() {
+      overlay.style.display = 'flex';
+    }
+
+    function addBalance() {
+      const amount = parseInt(document.getElementById('amount').value);
+      const password = document.getElementById('password').value;
+      
+      if (isNaN(amount) || amount <= 0) {
+        alert("Введите корректную сумму!");
+        return;
+      }
+      
+      if (password !== "228") {
+        alert("Неверный пароль! Введите 228");
+        return;
+      }
+
+      const currentBalance = parseBalance(balanceDisplay.textContent);
+      balanceDisplay.textContent = formatMoney(currentBalance + amount);
+      
+      overlay.style.display = 'none';
+      document.getElementById('amount').value = "";
+      document.getElementById('password').value = "";
+    }
+  </script>
+</body>
+</html>
